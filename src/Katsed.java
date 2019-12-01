@@ -1,6 +1,12 @@
+import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 public class Katsed {
     public static void main(String[] args) {
@@ -76,7 +82,36 @@ public class Katsed {
         vs18.tunnid = new HashMap<String, List<Tund>>();
         vs18.tunnid.put("2019-11-18", tunnid);
 
-        // kontrollime tunniplaani andmed
-        System.out.println(vs18);
+        // kontrollime tunniplaani andmed, json andmestik
+        Gson g = new Gson();
+        String vs18JSON = g.toJson(vs18);
+        System.out.println(vs18JSON);
+        try {
+            URL url = new URL("https://tkhk.siseveeb.ee/veebilehe_andmed/tunniplaan/tunniplaan?nadal=18.11.2019&grupp=1282");
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String str = "";
+            String result = "";
+            while (null != (str = br.readLine())){
+                result += str;
+            }
+            //System.out.println(result);
+            // siin kohal olemas vajalikud andmed
+            // kasutame need tunniplaani ehitamiseks
+            Gson tunniplaaniJSON = new Gson();
+            vs18 = tunniplaaniJSON.fromJson(result, Tunniplaan.class);
+            //System.out.println(vs18.nadal);
+            //System.out.println(vs18.tunnid);
+            for (Map.Entry<String, List<Tund>> element: vs18.tunnid.entrySet()){
+                // näitame kuupäevad
+                System.out.println(element.getKey());
+                // näitame antud kuupäeva tunnid
+                for (Tund tund: element.getValue()) {
+                    System.out.println(tund);
+                    System.out.println("------------------");
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
