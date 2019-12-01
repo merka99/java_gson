@@ -15,7 +15,9 @@ public class Tund {
                 "\nAine: " + aine +
                 "\nGrupp: " + grupp +
                 "\nOpetaja: " + opetaja +
-                "\nRuum: " + ruum
+                "\nRuum: " + ruum +
+                "\n===========" +
+                "\n"
                 ;
     }
 }
